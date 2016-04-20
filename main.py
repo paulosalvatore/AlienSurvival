@@ -7,20 +7,20 @@ config = {
 		"tamanho": [0, 0],
 		"corFundo": (255, 255, 255),
 		"cores": [
-			(60, 85, 17),
-			(232, 230, 83),
-			(221, 30, 30),
-			(255, 156, 0),
-			(0, 0, 255),
-			(112, 12, 162),
-			(0, 0, 0)
+			(150, 150, 150), # Cinza
+			(0, 0, 0), # Preto
+			(232, 230, 83), # Amarelo
+			(27, 122, 27), # Verde
+			(221, 30, 30), # Vermelho
+			(0, 0, 255) # Azul
 		]
 	},
 	"jogo": {
 		"area": (11, 11),
 		"areaJanela": (11, 11),
 		"areaJanelaExtra": (4, 0),
-		"borda": 64
+		"borda": 64,
+		"limiteTurnos": 20
 	},
 	"tiles": {
 		"tamanho": 64,
@@ -56,31 +56,24 @@ config = {
 		}
 	},
 	"jogadores": {
-		"tamanho": 32,
 		"margem": 16,
 		"numero": 4,
 		"posicoes": [],
 		"arquivos": [],
-		"cores": [
-			(0, 0, 0),
-			(111, 233, 234),
-			(255, 78, 236),
-			(159, 159, 159)
-		],
-		"nomes": ("Preto", "Azul", "Rosa", "Cinza")
+		"nomes": ("Amarelo", "Azul", "Vermelho", "Verde")
 	},
 	"mapa": [
-		[[1, 2, 3], -1, [2, 1, 4], -1, [1, 1], -1, [1, 2], -1, [2, 1, 4], -1, [1, 1, 3]],
+		[[1, 2, 3], -1, [2, 1, 4], -1, [1, 1, 6], -1, [1, 2, 3], -1, [2, 1, 5], -1, [1, 1, 6]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[2, 2, 4], -1, [2, 4, 6], -1, [2, 1, 5], -1, [2, 2, 5], -1, [2, 3, 6], -1, [2, 4, 4]],
+		[[2, 2, 5], -1, [2, 4, 4], -1, [2, 1, 3], -1, [2, 2, 6], -1, [2, 3, 5], -1, [2, 4, 4]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[1, 3], -1, [2, 3, 5], -1, [2, 2, 6], -1, [2, 1, 6], -1, [3, 1, 5], -1, [1, 4]],
+		[[1, 3, 3], -1, [2, 3, 6], -1, [2, 2, 5], -1, [2, 1, 4], -1, [3, 1, 3], -1, [1, 4, 6]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[1, 2], -1, [3, 1, 5], -1, [2, 3, 6], -1, [2, 4, 6], -1, [2, 1, 5], -1, [1, 1]],
+		[[1, 2, 4], -1, [3, 1, 5], -1, [2, 3, 6], -1, [2, 4, 3], -1, [2, 1, 4], -1, [1, 1, 5]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[2, 2, 4], -1, [2, 1, 6], -1, [2, 4, 5], -1, [2, 3, 5], -1, [2, 2, 6], -1, [2, 4, 4]],
+		[[2, 2, 6], -1, [2, 1, 3], -1, [2, 4, 4], -1, [2, 3, 5], -1, [2, 2, 6], -1, [2, 4, 3]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[1, 3, 3], -1, [2, 3, 4], -1, [1, 4], -1, [1, 3], -1, [2, 3, 4], -1, [1, 4, 3]]
+		[[1, 3, 4], -1, [2, 3, 3], -1, [1, 4, 5], -1, [1, 3, 4], -1, [2, 3, 6], -1, [1, 4, 5]]
 	],
 	"mapaAtual": [],
 	"sobressalente": {
@@ -90,9 +83,66 @@ config = {
 	"setaRotacionar": {
 		"posicao": [896 + 8, 448 + 8],
 		"tamanho": [48, 48],
+		"arquivos": []
+	},
+	"avancarTurno": {
+		"posicao": [832 + 8, 640 + 8],
+		"tamanho": [192, 64],
+		"arquivos": []
+	},
+	"movimentoProibido": {
+		"posicao": [0, 0],
+		"tamanho": 32,
+		"margem": [
+			[-36, 16], # Esquerda para Direita
+			[16, -36], # Cima para Baixo
+			[68, 16], # Direita para Esquerda
+			[16, 68] # Baixo para Cima
+		],
 		"arquivo": ""
-	}
+	},
+	"textoTela": {
+		"posicao": [32, 16],
+		"cor": (0, 0, 0)
+	},
+	"cursores": [
+		{
+			"esquema": "default",
+			"cursor": ""
+		},
+		{
+			"esquema": (
+				"     XX         ",
+				"    X..X        ",
+				"    X..X        ",
+				"    X..X        ",
+				"    X..XXXXX    ",
+				"    X..X..X.XX  ",
+				" XX X..X..X.X.X ",
+				"X..XX.........X ",
+				"X...X.........X ",
+				" X.....X.X.X..X ",
+				"  X....X.X.X..X ",
+				"  X....X.X.X.X  ",
+				"   X...X.X.X.X  ",
+				"    X.......X   ",
+				"     X....X.X   ",
+				"     XXXXX XX   "
+			),
+			"cursor": ""
+		}
+	]
 }
+
+def carregarCursores():
+	for i in range(len(config["cursores"])):
+		esquema = config["cursores"][i]["esquema"]
+		if esquema == "default":
+			cursor = pg.mouse.get_cursor()
+		else:
+			curs, mask = pg.cursors.compile(esquema, ".", "X")
+			cursor = ((16, 16), (5, 1), curs, mask)
+		config["cursores"][i]["cursor"] = cursor
 
 def definirTamanhoJanela():
 	configJogo = config["jogo"]
@@ -154,24 +204,36 @@ def carregarImagensTiles():
 			config["tiles"]["tipos"][i]["arquivos"].insert(j, arquivo)
 
 def carregarSetaRotacionar():
-	nomeArquivo = "setaRotacionar"
-	setaRotacionar = config["setaRotacionar"]
-	tamanho = setaRotacionar["tamanho"]
-	imagem = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
-	config["setaRotacionar"]["arquivo"] = pg.transform.scale(imagem, (tamanho[0], tamanho[1]))
+	nomeArquivoBase = "setaRotacionar"
+	for i in range(2):
+		nomeArquivo = nomeArquivoBase + str(i + 1)
+		tamanho = config["setaRotacionar"]["tamanho"]
+		imagem = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
+		config["setaRotacionar"]["arquivos"].append(pg.transform.scale(imagem, (tamanho[0], tamanho[1])))
+
+def carregarAvancarTurno():
+	nomeArquivoBase = "avancarTurno"
+	for i in range(2):
+		nomeArquivo = nomeArquivoBase + str(i + 1)
+		config["avancarTurno"]["arquivos"].append(pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha())
+
+def carregarMovimentoProibido():
+	nomeArquivo = "movimentoProibido"
+	config["movimentoProibido"]["arquivo"] = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
 
 def carregarJogadores():
 	jogadores = config["jogadores"]
-	tamanho = jogadores["tamanho"]
 	numero = jogadores["numero"]
 
 	for i in range(numero):
-		imagem = pg.Surface((tamanho, tamanho)).convert_alpha()
-		imagem.fill(config["jogadores"]["cores"][i])
-		x = 0 if i % 2 == 0 else config["jogo"]["area"][0] - 1
+		nomeArquivo = str(i + 1)
+		imagem = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
+
+		x = 0 if i == 0 or i == 3 else config["jogo"]["area"][0] - 1
 		y = 0 if i < 2 else config["jogo"]["area"][1] - 1
+
 		config["jogadores"]["arquivos"].append(imagem)
-		config["jogadores"]["posicoes"].insert(i, (y, x))
+		config["jogadores"]["posicoes"].insert(i, (x, y))
 
 class Jogadores(pg.sprite.Sprite):
 	def __init__(self, id, posicao):
@@ -192,15 +254,37 @@ class Tiles(pg.sprite.Sprite):
 		self.mask = pg.mask.from_surface(self.image)
 
 class SetaRotacionar(pg.sprite.Sprite):
-	def __init__(self):
+	def __init__(self, img):
 		pg.sprite.Sprite.__init__(self)
 		setaRotacionar = config["setaRotacionar"]
 		tamanho = setaRotacionar["tamanho"]
 		posicao = setaRotacionar["posicao"]
 		imagem = pg.Surface((tamanho[0], tamanho[1])).convert_alpha()
 		imagem.fill(config["janela"]["corFundo"])
-		imagem.blit(setaRotacionar["arquivo"], (0, 0))
+		imagem.blit(setaRotacionar["arquivos"][img], (0, 0))
 		self.image = imagem
+		self.rect = self.image.get_rect(topleft = posicao)
+		self.mask = pg.mask.from_surface(self.image)
+
+class AvancarTurno(pg.sprite.Sprite):
+	def __init__(self, img):
+		pg.sprite.Sprite.__init__(self)
+		avancarTurno = config["avancarTurno"]
+		tamanho = avancarTurno["tamanho"]
+		posicao = avancarTurno["posicao"]
+		imagem = pg.Surface((tamanho[0], tamanho[1])).convert_alpha()
+		imagem.fill(config["janela"]["corFundo"])
+		imagem.blit(avancarTurno["arquivos"][img], (0, 0))
+		self.image = imagem
+		self.rect = self.image.get_rect(topleft = posicao)
+		self.mask = pg.mask.from_surface(self.image)
+
+class MovimentoProibido(pg.sprite.Sprite):
+	def __init__(self, posicao):
+		pg.sprite.Sprite.__init__(self)
+		movimentoProibido = config["movimentoProibido"]
+		margem = movimentoProibido["margem"]
+		self.image = movimentoProibido["arquivo"]
 		self.rect = self.image.get_rect(topleft = posicao)
 		self.mask = pg.mask.from_surface(self.image)
 
@@ -210,6 +294,7 @@ class Control(object):
 		self.clock = pg.time.Clock()
 		self.fps = 60.0
 		self.done = False
+		self.jogoFinalizado = False
 
 		self.keys = pg.key.get_pressed()
 		self.mouse = pg.mouse.get_pressed()
@@ -218,17 +303,38 @@ class Control(object):
 		self.aplicarDelay = False
 		self.tempoDelay = 500
 
-		self.definirJogadores()
 		self.jogadorAtual = 0
+		self.turnoAtual = 1
+		self.limiteTurnos = config["jogo"]["limiteTurnos"]
+
+		self.imgSetaRotacionar = 1
+		self.imgAvancarTurno = 1
 
 		self.definirCenario()
 
-		self.turnoAtual = 1
+		self.definirJogadores()
+
+		self.movimentoProibido = None
 
 		tamanhoJanela = config["janela"]["tamanho"]
 		self.level = pg.Surface((tamanhoJanela[0], tamanhoJanela[1])).convert()
 		self.level_rect = self.level.get_rect()
 		self.viewport = self.screen.get_rect(top = self.level_rect.top)
+
+	def finalizarJogo(self):
+		self.jogoFinalizado = True
+
+	def carregarTextoTela(self):
+		fonte = pg.font.SysFont("verdana", 32)
+
+		if self.jogoFinalizado:
+			texto = "Jogo Finalizado."
+		else:
+			texto = "Turno: {} - Jogador Atual: {}".format(self.turnoAtual, config["jogadores"]["nomes"][self.jogadorAtual])
+
+		self.textoTela = fonte.render(texto, 1, config["textoTela"]["cor"])
+		self.posicaoTextoTela = self.textoTela.get_rect()
+		self.posicaoTextoTela.topleft = config["textoTela"]["posicao"]
 
 	def mudarCorTile(self):
 		posicao = calcularCoordenadas(self.posicaoMouse)
@@ -237,25 +343,29 @@ class Control(object):
 			tile = config["mapaAtual"][posicao[1]][posicao[0]]
 
 			if not (type(tile) is int) and len(tile) >= 2:
-				cor = 2 if len(tile) == 2 else tile[2]
-				novaCor = cor if len(tile) == 4 and tile[3] == 7 else 7
+				cor = 1 if len(tile) == 2 else tile[2]
+				novaCor = cor if len(tile) == 4 and tile[3] == 2 else 2
 
 				config["mapaAtual"][posicao[1]][posicao[0]] = [tile[0], tile[1], cor, novaCor]
 				self.cenario = self.criarCenario()
 
 		return posicao
 
+	def mudarTurnoAtual(self):
+		if self.jogadorAtual < config["jogadores"]["numero"] - 1:
+			self.jogadorAtual = self.jogadorAtual + 1
+		else:
+			self.jogadorAtual = 0
+			self.turnoAtual = self.turnoAtual + 1
+			if self.turnoAtual > self.limiteTurnos:
+				self.finalizarJogo()
+		self.carregarTextoTela()
+
 	def movimentarJogador(self):
 		posicao = calcularCoordenadas(self.posicaoMouse)
 
 		if posicao:
 			config["jogadores"]["posicoes"][self.jogadorAtual] = posicao
-
-			if self.jogadorAtual < config["jogadores"]["numero"] - 1:
-				self.jogadorAtual = self.jogadorAtual + 1
-			else:
-				self.jogadorAtual = 0
-				self.turnoAtual = self.turnoAtual + 1
 
 			self.definirJogadores()
 
@@ -281,9 +391,11 @@ class Control(object):
 		self.cenario = self.criarCenario()
 		self.definirTileSobressalente()
 		self.definirSetaRotacionar()
+		self.definirAvancarTurno()
 		carregarJogadores()
 		self.jogadores = []
 		self.definirJogadores()
+		self.carregarTextoTela()
 
 	def criarCenario(self):
 		cenario = []
@@ -377,21 +489,37 @@ class Control(object):
 			coluna = range(len(config["mapaAtual"]))
 			reverter = False
 
-			if posicao[0] == 0:
+			x, y = posicao
+			posicaoMovimentoProibido = list(calcularPosicao(x, y))
+			movimentoProibido = config["movimentoProibido"]
+			tamanho = movimentoProibido["tamanho"]
+			margem = movimentoProibido["margem"]
+
+			if posicao[0] == 0: # Esquerda para Direita
 				x, y = posicao[1], tamanhoMax[1] - 1
 				varrerLinha = True
 				linha = range(len(config["mapaAtual"][x]))
-			elif posicao[1] == 0:
+				posicaoMovimentoProibido[0] += margem[0][0]
+				posicaoMovimentoProibido[1] += margem[0][1]
+			elif posicao[1] == 0: # Cima para Baixo
 				x, y = tamanhoMax[0] - 1, posicao[0]
 				varrerColuna = True
-			elif posicao[0] == tamanhoMax[0] - 1:
+				posicaoMovimentoProibido[0] += margem[1][0]
+				posicaoMovimentoProibido[1] += margem[1][1]
+			elif posicao[0] == tamanhoMax[0] - 1: # Direita para Esquerda
 				x, y = posicao[1], 0
 				linha = reversed(range(len(config["mapaAtual"][x])))
 				varrerLinha = True
-			elif posicao[1] == tamanhoMax[1] - 1:
+				posicaoMovimentoProibido[0] += margem[2][0]
+				posicaoMovimentoProibido[1] += margem[2][1]
+			elif posicao[1] == tamanhoMax[1] - 1: # Baixo para Cima
 				x, y = 0, posicao[0]
 				varrerColuna = True
 				reverter = True
+				posicaoMovimentoProibido[0] += margem[3][0]
+				posicaoMovimentoProibido[1] += margem[3][1]
+
+			self.definirMovimentoProibido(posicaoMovimentoProibido)
 
 			sobressalente = []
 			for i in config["sobressalente"]["valor"]:
@@ -439,24 +567,60 @@ class Control(object):
 			self.definirTileSobressalente()
 
 	def definirSetaRotacionar(self):
-		self.setaRotacionar = SetaRotacionar()
+		self.setaRotacionar = SetaRotacionar(self.imgSetaRotacionar - 1)
 		self.setaRotacionarGroup = pg.sprite.Group([self.setaRotacionar])
+
+	def definirAvancarTurno(self):
+		self.avancarTurno = AvancarTurno(self.imgAvancarTurno - 1)
+		self.avancarTurnoGroup = pg.sprite.Group([self.avancarTurno])
+
+	def definirMovimentoProibido(self, posicao):
+		self.movimentoProibido = pg.sprite.Group([MovimentoProibido(posicao)])
+
+	def mudarImgSetaRotacionar(self):
+		self.imgSetaRotacionar = 2 if self.imgSetaRotacionar == 1 else 1
+		self.definirSetaRotacionar()
+
+	def mudarImgAvancarTurno(self):
+		self.imgAvancarTurno = 2 if self.imgAvancarTurno == 1 else 1
+		self.definirAvancarTurno()
 
 	def event_loop(self):
 		for event in pg.event.get():
 			self.keys = pg.key.get_pressed()
 			self.mouse = pg.mouse.get_pressed()
 			self.posicaoMouse = pg.mouse.get_pos()
+			x, y = self.posicaoMouse
+
+			checarPosicaoSetaRotacionar = self.setaRotacionar.rect.collidepoint(x, y)
+			checarPosicaoAvancarTurno = self.avancarTurno.rect.collidepoint(x, y)
+
+			if self.imgSetaRotacionar == 1 and checarPosicaoSetaRotacionar == 1:
+				self.mudarImgSetaRotacionar()
+				pg.mouse.set_cursor(*config["cursores"][1]["cursor"])
+			elif self.imgSetaRotacionar == 2 and checarPosicaoSetaRotacionar == 0:
+				self.mudarImgSetaRotacionar()
+				pg.mouse.set_cursor(*config["cursores"][0]["cursor"])
+
+			if self.imgAvancarTurno == 1 and checarPosicaoAvancarTurno == 1:
+				self.mudarImgAvancarTurno()
+				pg.mouse.set_cursor(*config["cursores"][1]["cursor"])
+			elif self.imgAvancarTurno == 2 and checarPosicaoAvancarTurno == 0:
+				self.mudarImgAvancarTurno()
+				pg.mouse.set_cursor(*config["cursores"][0]["cursor"])
+
 			if event.type == pg.QUIT or self.keys[pg.K_ESCAPE]:
 				self.done = True
 			elif event.type == pg.KEYDOWN and self.keys[pg.K_F5]:
 				self.definirCenario()
 				self.aplicarDelay = True
-			elif self.mouse[0] == 1:
-				x, y = self.posicaoMouse
-				checarPosicaoSetaRotacionar = self.setaRotacionar.rect.collidepoint(x, y)
+			elif not self.jogoFinalizado and self.mouse[0] == 1:
 				if checarPosicaoSetaRotacionar == 1:
 					self.mudarRotacaoTileSobressalente()
+					self.aplicarDelay = True
+					self.tempoDelay = 300
+				elif checarPosicaoAvancarTurno == 1:
+					self.mudarTurnoAtual()
 					self.aplicarDelay = True
 					self.tempoDelay = 300
 				elif self.movimentarJogador():
@@ -466,7 +630,7 @@ class Control(object):
 					self.inserirTile()
 					self.aplicarDelay = True
 					self.tempoDelay = 500
-			elif self.mouse[2] == 1:
+			elif not self.jogoFinalizado and self.mouse[2] == 1:
 				if self.mudarCorTile():
 					self.aplicarDelay = True
 					self.tempoDelay = 300
@@ -476,6 +640,10 @@ class Control(object):
 		self.cenario.draw(self.level)
 		self.tileSobressalente.draw(self.level)
 		self.setaRotacionarGroup.draw(self.level)
+		self.avancarTurnoGroup.draw(self.level)
+		if self.movimentoProibido:
+			self.movimentoProibido.draw(self.level)
+		self.level.blit(self.textoTela, self.posicaoTextoTela)
 		self.jogadores.draw(self.level)
 		self.screen.blit(self.level, (0, 0), self.viewport)
 
@@ -500,9 +668,11 @@ def main():
 	pg.display.set_caption(config["janela"]["titulo"])
 	definirTamanhoJanela()
 	pg.display.set_mode(config["janela"]["tamanho"])
+	carregarCursores()
 	carregarImagensTiles()
 	carregarSetaRotacionar()
-	carregarJogadores()
+	carregarAvancarTurno()
+	carregarMovimentoProibido()
 	Control().main_loop()
 	pg.quit()
 	os._exit(1)
