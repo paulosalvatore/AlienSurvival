@@ -57,7 +57,7 @@ config = {
 	},
 	"jogadores": {
 		"margem": 16,
-		"numero": 4,
+		"quantidade": 4,
 		"posicoes": [],
 		"arquivos": [],
 		"nomes": ("Amarelo", "Azul", "Vermelho", "Verde")
@@ -65,13 +65,13 @@ config = {
 	"mapa": [
 		[[1, 2, 3], -1, [2, 1, 4], -1, [1, 1, 6], -1, [1, 2, 3], -1, [2, 1, 5], -1, [1, 1, 6]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[2, 2, 5], -1, [2, 4, 4], -1, [2, 1, 3], -1, [2, 2, 6], -1, [2, 3, 5], -1, [2, 4, 4]],
+		[[2, 2, 5], -1, [2, 4, 4], -1, [3, 1, 3], -1, [3, 1, 6], -1, [2, 3, 5], -1, [2, 4, 4]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[1, 3, 3], -1, [2, 3, 6], -1, [2, 2, 5], -1, [2, 1, 4], -1, [3, 1, 3], -1, [1, 4, 6]],
+		[[1, 3, 3], -1, [3, 1, 6], -1, [2, 2, 5], -1, [2, 1, 4], -1, [3, 1, 3], -1, [1, 4, 6]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[1, 2, 4], -1, [3, 1, 5], -1, [2, 3, 6], -1, [2, 4, 3], -1, [2, 1, 4], -1, [1, 1, 5]],
+		[[1, 2, 4], -1, [3, 1, 5], -1, [2, 3, 6], -1, [2, 4, 3], -1, [3, 1, 4], -1, [1, 1, 5]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-		[[2, 2, 6], -1, [2, 1, 3], -1, [2, 4, 4], -1, [2, 3, 5], -1, [2, 2, 6], -1, [2, 4, 3]],
+		[[2, 2, 6], -1, [2, 1, 3], -1, [3, 1, 4], -1, [3, 1, 5], -1, [2, 2, 6], -1, [2, 4, 3]],
 		[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
 		[[1, 3, 4], -1, [2, 3, 3], -1, [1, 4, 5], -1, [1, 3, 4], -1, [2, 3, 6], -1, [1, 4, 5]]
 	],
@@ -79,6 +79,13 @@ config = {
 	"sobressalente": {
 		"posicao": [13, 5],
 		"valor": [-1, 1, 1]
+	},
+	"armadilhas": {
+		"margem": 16,
+		"quantidade": 15,
+		"arquivo": [],
+		"mapa": [],
+		"sobressalente": 0
 	},
 	"setaRotacionar": {
 		"posicao": [896 + 8, 448 + 8],
@@ -221,11 +228,15 @@ def carregarMovimentoProibido():
 	nomeArquivo = "movimentoProibido"
 	config["movimentoProibido"]["arquivo"] = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
 
+def carregarArmadilha():
+	nomeArquivo = "armadilha"
+	config["armadilhas"]["arquivo"] = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
+
 def carregarJogadores():
 	jogadores = config["jogadores"]
-	numero = jogadores["numero"]
+	quantidade = jogadores["quantidade"]
 
-	for i in range(numero):
+	for i in range(quantidade):
 		nomeArquivo = str(i + 1)
 		imagem = pg.image.load(os.path.join(sys.path[0], "imagens/"+nomeArquivo+".png")).convert_alpha()
 
@@ -282,9 +293,16 @@ class AvancarTurno(pg.sprite.Sprite):
 class MovimentoProibido(pg.sprite.Sprite):
 	def __init__(self, posicao):
 		pg.sprite.Sprite.__init__(self)
-		movimentoProibido = config["movimentoProibido"]
-		margem = movimentoProibido["margem"]
-		self.image = movimentoProibido["arquivo"]
+		self.image = config["movimentoProibido"]["arquivo"]
+		self.rect = self.image.get_rect(topleft = posicao)
+		self.mask = pg.mask.from_surface(self.image)
+
+class Armadilhas(pg.sprite.Sprite):
+	def __init__(self, posicao):
+		pg.sprite.Sprite.__init__(self)
+		armadilhas = config["armadilhas"]
+		margem = armadilhas["margem"]
+		self.image = armadilhas["arquivo"]
 		self.rect = self.image.get_rect(topleft = posicao)
 		self.mask = pg.mask.from_surface(self.image)
 
@@ -350,7 +368,7 @@ class Control(object):
 		return posicao
 
 	def mudarTurnoAtual(self):
-		if self.jogadorAtual < config["jogadores"]["numero"] - 1:
+		if self.jogadorAtual < config["jogadores"]["quantidade"] - 1:
 			self.jogadorAtual = self.jogadorAtual + 1
 		else:
 			self.jogadorAtual = 0
@@ -372,7 +390,7 @@ class Control(object):
 	def definirJogadores(self):
 		jogadores = []
 
-		for i in range(config["jogadores"]["numero"]):
+		for i in range(config["jogadores"]["quantidade"]):
 			posicao = config["jogadores"]["posicoes"][i]
 			posicaoCalculada = calcularPosicao(posicao[0], posicao[1])
 			margem = config["jogadores"]["margem"]
@@ -391,6 +409,8 @@ class Control(object):
 		self.definirTileSobressalente()
 		self.definirSetaRotacionar()
 		self.definirAvancarTurno()
+		self.definirMapaArmadilhas()
+		self.criarArmadilhas()
 		carregarJogadores()
 		self.jogadores = []
 		self.definirJogadores()
@@ -520,50 +540,70 @@ class Control(object):
 
 			self.definirMovimentoProibido(posicaoMovimentoProibido)
 
+			mapaArmadilhas = config["armadilhas"]["mapa"]
+
 			sobressalente = []
 			for i in config["sobressalente"]["valor"]:
 				sobressalente.append(i)
 
+			armadilhaSobressalente = config["armadilhas"]["sobressalente"]
+
 			if varrerLinha:
 				proximoTile = -1
+
 				for i in linha:
 					if proximoTile == -1:
 						proximoTile = sobressalente
+						tileArmadilha = armadilhaSobressalente
+
+					proximoTileArmadilha = mapaArmadilhas[x][i]
 
 					novoProximoTile = []
 					for j in config["mapaAtual"][x][i]:
 						novoProximoTile.append(j)
 
 					config["mapaAtual"][x][i] = proximoTile
+					config["armadilhas"]["mapa"][x][i] = tileArmadilha
 
 					proximoTile = novoProximoTile
+					tileArmadilha = proximoTileArmadilha
 
 					if i == y:
 						config["sobressalente"]["valor"] = novoProximoTile
+						config["armadilhas"]["sobressalente"] = proximoTileArmadilha
 			elif varrerColuna:
 				proximoTile = -1
+
 				if reverter:
 					coluna = reversed(coluna)
+
 				for i in coluna:
 					linha = range(len(config["mapaAtual"][i]))
 					for j in linha:
 						if j == y:
 							if proximoTile == -1:
 								proximoTile = sobressalente
+								tileArmadilha = armadilhaSobressalente
+
+							proximoTileArmadilha = mapaArmadilhas[i][j]
 
 							novoProximoTile = []
 							for k in config["mapaAtual"][i][j]:
 								novoProximoTile.append(k)
 
 							config["mapaAtual"][i][j] = proximoTile
+							config["armadilhas"]["mapa"][i][j] = tileArmadilha
 
 							proximoTile = novoProximoTile
+							tileArmadilha = proximoTileArmadilha
 
 							if i == x:
 								config["sobressalente"]["valor"] = novoProximoTile
+								config["armadilhas"]["sobressalente"] = proximoTileArmadilha
 
 			self.cenario = self.criarCenario()
 			self.definirTileSobressalente()
+			self.criarArmadilhas()
 
 	def definirSetaRotacionar(self):
 		self.setaRotacionar = SetaRotacionar(self.imgSetaRotacionar - 1)
@@ -575,6 +615,57 @@ class Control(object):
 
 	def definirMovimentoProibido(self, posicao):
 		self.movimentoProibido = pg.sprite.Group([MovimentoProibido(posicao)])
+
+	def definirMapaArmadilhas(self):
+
+		area = config["jogo"]["area"]
+
+		mapa = []
+
+		tilesDisponiveis = []
+
+		config["armadilhas"]["sobressalente"] = 0
+
+		for i in range(area[0]):
+			mapa.append([])
+			for j in range(area[1]):
+				mapa[i].append(0)
+				if i > 0 and j > 0 and i < area[0] - 1 and j < area[1] - 1 and ((i + 1) % 2 == 0 or (j + 1) % 2 == 0):
+					tilesDisponiveis.append([i, j])
+
+		for i in range(config["armadilhas"]["quantidade"]):
+			tile = random.choice(tilesDisponiveis)
+			tilesDisponiveis.remove(tile)
+			x, y = tile
+			mapa[x][y] = 1
+
+		config["armadilhas"]["mapa"] = mapa
+
+	def criarArmadilhas(self):
+		armadilhas = []
+
+		mapaArmadilhas = config["armadilhas"]["mapa"]
+
+		for i in range(len(mapaArmadilhas)):
+			for j in range(len(mapaArmadilhas[i])):
+				if mapaArmadilhas[j][i] == 1:
+					posicao = list(calcularPosicao(i, j))
+					margem = config["armadilhas"]["margem"]
+					posicao[0] += margem
+					posicao[1] += margem
+					armadilhas.append(Armadilhas(posicao))
+
+		armadilhaSobressalente = config["armadilhas"]["sobressalente"]
+
+		if armadilhaSobressalente == 1:
+			x, y = config["sobressalente"]["posicao"]
+			posicao = list(calcularPosicao(x, y))
+			margem = config["armadilhas"]["margem"]
+			posicao[0] += margem
+			posicao[1] += margem
+			armadilhas.append(Armadilhas(posicao))
+
+		self.armadilhas = pg.sprite.Group(armadilhas)
 
 	def mudarImgSetaRotacionar(self):
 		self.imgSetaRotacionar = 2 if self.imgSetaRotacionar == 1 else 1
@@ -642,6 +733,7 @@ class Control(object):
 		self.avancarTurnoGroup.draw(self.level)
 		if self.movimentoProibido:
 			self.movimentoProibido.draw(self.level)
+		self.armadilhas.draw(self.level)
 		self.level.blit(self.textoTela, self.posicaoTextoTela)
 		self.jogadores.draw(self.level)
 		self.screen.blit(self.level, (0, 0), self.viewport)
@@ -672,6 +764,7 @@ def main():
 	carregarSetaRotacionar()
 	carregarAvancarTurno()
 	carregarMovimentoProibido()
+	carregarArmadilha()
 	Control().main_loop()
 	pg.quit()
 	os._exit(1)
