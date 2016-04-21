@@ -7,7 +7,7 @@ config = {
 		"tamanho": [0, 0],
 		"corFundo": (255, 255, 255),
 		"cores": [
-			(150, 150, 150), # Cinza
+			(117, 117, 117), # Cinza
 			(0, 0, 0), # Preto
 			(232, 230, 83), # Amarelo
 			(27, 122, 27), # Verde
@@ -49,7 +49,7 @@ config = {
 			3: {
 				"nomeArquivo": "Tile4",
 				"block": False,
-				"quantidade": 6,
+				"quantidade": 5,
 				"rotacao": [1],
 				"arquivos": []
 			}
@@ -314,8 +314,6 @@ class Control(object):
 
 		self.definirJogadores()
 
-		self.movimentoProibido = None
-
 		tamanhoJanela = config["janela"]["tamanho"]
 		self.level = pg.Surface((tamanhoJanela[0], tamanhoJanela[1])).convert()
 		self.level_rect = self.level.get_rect()
@@ -384,6 +382,7 @@ class Control(object):
 		self.jogadores = pg.sprite.Group(jogadores)
 
 	def definirCenario(self):
+		self.movimentoProibido = None
 		self.jogadorAtual = 0
 		self.turnoAtual = 1
 		config["mapaAtual"] = []
