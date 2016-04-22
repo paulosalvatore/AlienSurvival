@@ -6,7 +6,11 @@ class Dado(object):
 		self.tipo = None
 
 	def rolarDadoCombate(self):
-		resultado = random.randint(1, 6)
+
+		min = 1
+		max = 8 if self.tipo == 5 else 6
+
+		resultado = random.randint(min, max)
 
 		valor = 0
 
@@ -22,17 +26,33 @@ class Dado(object):
 		elif self.tipo == 3:
 			if resultado <= 3:
 				valor = resultado
-				self.exibirNumero(resultado)
+				self.exibirNumero(resultado, True)
 			else:
 				self.exibirVazio()
+		elif self.tipo == 4 or self.tipo == 5:
+			valor = resultado
+			self.exibirNumero(resultado, False)
+		elif self.tipo == 6:
+			valor = 1
+			if resultado <= 2:
+				self.exibirVazio()
+			elif resultado == 3:
+				print("+1 HP")
+			elif resultado == 4:
+				print("+2 HP")
+			elif resultado == 5:
+				print("Teleport")
+			elif resultado == 6:
+				print("1 PC = 1 Stats")
+				
 
 		return valor
 
 	def exibirVazio(self):
 		print("Face Vazia (v = 0).")
 
-	def exibirNumero(self, n):
-		print("+{}.".format(n))
+	def exibirNumero(self, n, exibirSinal):
+		print("{}{}.".format("+" if exibirSinal else "", n))
 
 	def exibirNormal(self):
 		if self.tipo == 1:
@@ -48,23 +68,41 @@ class Dado(object):
 
 dado = Dado()
 
+def inputInteiro(mensagem, min = 0, max = 0):
+	valor = 0
+
+	while valor == 0:
+		valor = input(mensagem)
+
+		try:
+			valor = int(valor)
+
+			if min > 0:
+				if valor < min or valor > max:
+					valor = 0
+		except ValueError:
+			valor = 0
+
+	return valor
+
 while True:
-	tipoDados = int(input("Insira o tipo dos dados (1 = ataque, 2 = defesa e 3 = números): "))
-	if tipoDados < 3:
-		numeroDadosTotal = int(input("Insira a quantidade de dados: "))
-		numeroDadosPegar = int(input("Insira a quantidade de dados para somar: "))
-	else:
+	tipoDados = inputInteiro("Insira o tipo dos dados:\n1 = ATK\n2 = DEF\n3 = Auxílio\n4 = D6\n5 = D8\n6 = Dado Personagem\n", 1, 5)
+
+	if tipoDados == 3 or tipoDados == 5 or tipoDados == 6:
 		numeroDadosTotal = 1
 		numeroDadosPegar = 1
+	else:
+		numeroDadosTotal = inputInteiro("Insira a quantidade de dados: ")
+		if tipoDados == 1 or tipoDados == 2:
+			numeroDadosPegar = inputInteiro("Insira a quantidade de dados para somar: ")
 
 	dado.tipo = tipoDados
 
 	resultados = []
 
-	print()
+	print("Resultado:")
 	for i in range(numeroDadosTotal):
 		resultados.append(dado.rolarDadoCombate())
-	print()
 
 	resultados = sorted(resultados, reverse = True)
 
@@ -74,5 +112,3 @@ while True:
 
 	if tipoDados == 1 or tipoDados == 2:
 		print("Total da Rolagem: {}".format(totalRolagem))
-
-	print("------------------------------------")
