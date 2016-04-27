@@ -82,7 +82,7 @@ config = {
 	},
 	"armadilhas": {
 		"margem": 16,
-		"quantidade": 15,
+		"quantidade": 16,
 		"arquivo": [],
 		"mapa": [],
 		"sobressalente": 0
