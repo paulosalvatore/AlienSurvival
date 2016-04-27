@@ -9,8 +9,14 @@ class Dado(object):
 
 		min = 1
 		max = 8 if self.tipo == 5 else 6
+		max = 12 if self.tipo == 7 else max
 
-		resultado = random.randint(min, max)
+		resultados = []
+
+		for i in range(10000):
+			resultados.append(random.randint(min, max))
+
+		resultado = random.choice(resultados)
 
 		valor = 0
 
@@ -29,7 +35,7 @@ class Dado(object):
 				self.exibirNumero(resultado, True)
 			else:
 				self.exibirVazio()
-		elif self.tipo == 4 or self.tipo == 5:
+		elif self.tipo == 4 or self.tipo == 5 or self.tipo == 7:
 			valor = resultado
 			self.exibirNumero(resultado, False)
 		elif self.tipo == 6:
@@ -86,9 +92,9 @@ def inputInteiro(mensagem, min = 0, max = 0):
 	return valor
 
 while True:
-	tipoDados = inputInteiro("Insira o tipo dos dados:\n1 = ATK\n2 = DEF\n3 = Auxílio\n4 = D6\n5 = D8\n6 = Dado Personagem\n", 1, 5)
+	tipoDados = inputInteiro("Insira o tipo dos dados:\n1 = ATK\n2 = DEF\n3 = Auxílio\n4 = D6\n5 = D8\n6 = Dado Personagem\n7 = D12\n", 1, 7)
 
-	if tipoDados == 3 or tipoDados == 5 or tipoDados == 6:
+	if tipoDados == 3 or tipoDados == 5 or tipoDados == 6 or tipoDados == 7:
 		numeroDadosTotal = 1
 		numeroDadosPegar = 1
 	else:
