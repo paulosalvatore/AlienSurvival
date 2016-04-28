@@ -246,6 +246,23 @@ def carregarJogadores():
 		config["jogadores"]["arquivos"].append(imagem)
 		config["jogadores"]["posicoes"].insert(i, (x, y))
 
+def verificarJogadoresPosicao(x, y):
+	jogadores = config["jogadores"]
+	quantidade = jogadores["quantidade"]
+	posicoes = jogadores["posicoes"]
+
+	jogadoresPosicao = []
+
+	for i in range(quantidade):
+		posicao = posicoes[i]
+		if posicao[0] == x and posicao[1] == y:
+			jogadoresPosicao.append(i)
+
+	if len(jogadoresPosicao) > 0:
+		return jogadoresPosicao
+
+	return False
+
 class Jogadores(pg.sprite.Sprite):
 	def __init__(self, id, posicao):
 		pg.sprite.Sprite.__init__(self)
@@ -313,6 +330,7 @@ class Control(object):
 		self.fps = 60.0
 		self.done = False
 		self.jogoFinalizado = False
+		self.ultimoEvento = 0
 
 		self.keys = pg.key.get_pressed()
 		self.mouse = pg.mouse.get_pressed()
@@ -528,6 +546,7 @@ class Control(object):
 			elif posicao[0] == tamanhoMax[0] - 1: # Direita para Esquerda
 				x, y = posicao[1], 0
 				linha = reversed(range(len(config["mapaAtual"][x])))
+				reverter = True
 				varrerLinha = True
 				posicaoMovimentoProibido[0] += margem[2][0]
 				posicaoMovimentoProibido[1] += margem[2][1]
@@ -548,6 +567,8 @@ class Control(object):
 
 			armadilhaSobressalente = config["armadilhas"]["sobressalente"]
 
+			novasPosicoes = []
+
 			if varrerLinha:
 				proximoTile = -1
 
@@ -567,6 +588,15 @@ class Control(object):
 
 					proximoTile = novoProximoTile
 					tileArmadilha = proximoTileArmadilha
+
+					jogadores = verificarJogadoresPosicao(i, x)
+					if jogadores:
+						for jogador in jogadores:
+							if reverter:
+								novaPosicao = i - 1 if i > 0 else 0
+							else:
+								novaPosicao = i + 1 if i < config["jogo"]["area"][0] - 1 else config["jogo"]["area"][1] - 1
+							novasPosicoes.append([jogador, novaPosicao, x])
 
 					if i == y:
 						config["sobressalente"]["valor"] = novoProximoTile
@@ -597,13 +627,26 @@ class Control(object):
 							proximoTile = novoProximoTile
 							tileArmadilha = proximoTileArmadilha
 
+							jogadores = verificarJogadoresPosicao(j, i)
+							if jogadores:
+								for jogador in jogadores:
+									if reverter:
+										novaPosicao = i - 1 if i > 0 else 0
+									else:
+										novaPosicao = i + 1 if i < config["jogo"]["area"][1] - 1 else config["jogo"]["area"][1] - 1
+									novasPosicoes.append([jogador, j, novaPosicao])
+
 							if i == x:
 								config["sobressalente"]["valor"] = novoProximoTile
 								config["armadilhas"]["sobressalente"] = proximoTileArmadilha
 
+			for i in novasPosicoes:
+				config["jogadores"]["posicoes"][i[0]] = [i[1], i[2]]
+
 			self.cenario = self.criarCenario()
 			self.definirTileSobressalente()
 			self.criarArmadilhas()
+			self.definirJogadores()
 
 	def definirSetaRotacionar(self):
 		self.setaRotacionar = SetaRotacionar(self.imgSetaRotacionar - 1)
@@ -681,6 +724,8 @@ class Control(object):
 			self.mouse = pg.mouse.get_pressed()
 			self.posicaoMouse = pg.mouse.get_pos()
 			x, y = self.posicaoMouse
+			tempoAtual = pg.time.get_ticks()
+			eventosLiberados = tempoAtual >= self.ultimoEvento
 
 			checarPosicaoSetaRotacionar = self.setaRotacionar.rect.collidepoint(x, y)
 			checarPosicaoAvancarTurno = self.avancarTurno.rect.collidepoint(x, y)
@@ -699,31 +744,32 @@ class Control(object):
 				self.mudarImgAvancarTurno()
 				pg.mouse.set_cursor(*config["cursores"][0]["cursor"])
 
-			if event.type == pg.QUIT or self.keys[pg.K_ESCAPE]:
-				self.done = True
-			elif event.type == pg.KEYDOWN and self.keys[pg.K_F5]:
-				self.definirCenario()
-				self.aplicarDelay = True
-			elif not self.jogoFinalizado and self.mouse[0] == 1:
-				if checarPosicaoSetaRotacionar == 1:
-					self.mudarRotacaoTileSobressalente()
+			if eventosLiberados:
+				if event.type == pg.QUIT or self.keys[pg.K_ESCAPE]:
+					self.done = True
+				elif event.type == pg.KEYDOWN and self.keys[pg.K_F5]:
+					self.definirCenario()
 					self.aplicarDelay = True
-					self.tempoDelay = 300
-				elif checarPosicaoAvancarTurno == 1:
-					self.mudarTurnoAtual()
-					self.aplicarDelay = True
-					self.tempoDelay = 300
-				elif self.movimentarJogador():
-					self.aplicarDelay = True
-					self.tempoDelay = 500
-				else:
-					self.inserirTile()
-					self.aplicarDelay = True
-					self.tempoDelay = 500
-			elif not self.jogoFinalizado and self.mouse[2] == 1:
-				if self.mudarCorTile():
-					self.aplicarDelay = True
-					self.tempoDelay = 300
+				elif not self.jogoFinalizado and self.mouse[0] == 1:
+					if checarPosicaoSetaRotacionar == 1:
+						self.mudarRotacaoTileSobressalente()
+						self.aplicarDelay = True
+						self.tempoDelay = 300
+					elif checarPosicaoAvancarTurno == 1:
+						self.mudarTurnoAtual()
+						self.aplicarDelay = True
+						self.tempoDelay = 300
+					elif self.movimentarJogador():
+						self.aplicarDelay = True
+						self.tempoDelay = 500
+					else:
+						self.inserirTile()
+						self.aplicarDelay = True
+						self.tempoDelay = 500
+				elif not self.jogoFinalizado and self.mouse[2] == 1:
+					if self.mudarCorTile():
+						self.aplicarDelay = True
+						self.tempoDelay = 300
 
 	def draw(self):
 		self.level.fill(config["janela"]["corFundo"], self.viewport)
@@ -750,7 +796,7 @@ class Control(object):
 			self.clock.tick(self.fps)
 			self.display_fps()
 			if self.aplicarDelay:
-				pg.time.wait(self.tempoDelay)
+				self.ultimoEvento = pg.time.get_ticks() + self.tempoDelay
 				self.aplicarDelay = False
 
 def main():
