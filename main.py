@@ -35,21 +35,21 @@ config = {
 			1: {
 				"nomeArquivo": "Tile2",
 				"block": False,
-				"quantidade": 32,
+				"quantidade": 29,
 				"rotacao": [1, 1, 1, 1],
 				"arquivos": []
 			},
 			2: {
 				"nomeArquivo": "Tile3",
 				"block": False,
-				"quantidade": 32,
+				"quantidade": 29,
 				"rotacao": [1, 1, 1, 1],
 				"arquivos": []
 			},
 			3: {
 				"nomeArquivo": "Tile4",
 				"block": False,
-				"quantidade": 5,
+				"quantidade": 6,
 				"rotacao": [1],
 				"arquivos": []
 			}
