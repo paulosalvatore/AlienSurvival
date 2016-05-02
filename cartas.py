@@ -12,7 +12,9 @@ cartas = {
 		"Curto-circuito",
 		"Curto-circuito",
 		"Incêndio",
-		"Incêndio"
+		"Incêndio",
+		"Bug no Sistema",
+		"Bug no Sistema"
 	],
 	"Setor A": [
 		"Placa de Metal",
